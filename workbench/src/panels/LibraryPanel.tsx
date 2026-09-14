@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Player, type PlayerRef } from "@remotion/player";
 import type { CardDef } from "../cards/types";
-import { cardFps, cardSize, defaultsOf } from "../cards/types";
+import { cardFps, cardSize } from "../cards/types";
+import { themedProps } from '../theme';
 import { CARD_LIST } from "../cards/registry";
 import { DEMO_CATEGORIES } from "../cards/demoCards";
 import { MANIFEST } from "../cards/projectCards";
@@ -79,6 +80,7 @@ const LazyLoopVideo: React.FC<{ src: string }> = ({ src }) => {
  *  曾经默认自动循环：十几个 1080p 场景同时跑、闪白转场卡每 0.3s 白一次、字卡每 1.8s 淡出重来，
  *  首屏像在闪光灯下；大图反复解码还刷出一串 EncodingError。 */
 const LazyCardLoop: React.FC<{ card: CardDef }> = ({ card }) => {
+  const themeId = useStore(s => s.project.themeId);
   const { ref, visible } = useVisible();
   const { width, height } = cardSize(card);
   const player = useRef<PlayerRef>(null);
@@ -115,7 +117,7 @@ const LazyCardLoop: React.FC<{ card: CardDef }> = ({ card }) => {
         <Player
           ref={player}
           component={card.component}
-          inputProps={defaultsOf(card)}
+          inputProps={themedProps(MANIFEST, card, themeId)}
           durationInFrames={total}
           compositionWidth={width}
           compositionHeight={height}

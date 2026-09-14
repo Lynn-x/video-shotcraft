@@ -6,6 +6,8 @@ import { Timeline } from "./timeline/Timeline";
 import { resetProject, useStore } from "./store";
 import { seekTo, togglePlay } from "./playerRef";
 import type { ProjectData } from "./types";
+import { MANIFEST } from './cards/projectCards';
+import { selectedTheme, switchTheme } from './theme';
 
 const isEditable = (el: EventTarget | null) =>
   el instanceof HTMLElement &&
@@ -186,6 +188,22 @@ export const App: React.FC = () => {
           spellCheck={false}
         />
         <span style={{ flex: 1 }} />
+        {!!MANIFEST?.themes?.length && (
+          <div className="theme-switch" role="group" aria-label="影片主题">
+            {MANIFEST.themes.map(theme => (
+              <button key={theme.id} className="btn"
+                aria-pressed={selectedTheme(MANIFEST, project.themeId)?.id === theme.id}
+                title={`切换到${theme.label}；保留文案与剪辑，可撤销`}
+                onClick={() => {
+                  if (selectedTheme(MANIFEST, project.themeId)?.id !== theme.id)
+                    useStore.getState().setProject(switchTheme(project, MANIFEST, theme.id));
+                }}>
+                <span className="theme-swatch" style={{background: theme.background}} />
+                {theme.label.split(' · ')[0]}
+              </button>
+            ))}
+          </div>
+        )}
         <button className="btn" disabled={!canUndo} onClick={undo} title="撤销（⌘Z）">
           ↩ 撤销
         </button>

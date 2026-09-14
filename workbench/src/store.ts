@@ -7,6 +7,7 @@ import { demoProject } from "./demoProject";
 import { MANIFEST } from "./cards/projectCards";
 import { manifestKey } from "./cards/manifest";
 import { buildProjectFromManifest } from "./projectImport";
+import { upgradeLegacyTheme } from './theme';
 
 export { projectDuration } from "./types";
 
@@ -31,7 +32,8 @@ const loadSaved = (): ProjectData | null => {
  *    旧存档压进撤销栈（⌘Z 可找回改动）；是这一版的保留用户改动
  *  - 否则读存档；没有存档时用演示工程 */
 const loadInitial = (): { project: ProjectData; past: ProjectData[]; imported: boolean } => {
-  const saved = loadSaved();
+  const raw = loadSaved();
+  const saved = raw ? upgradeLegacyTheme(raw, MANIFEST, CARDS) : null;
   const params = new URLSearchParams(window.location.search);
   if (params.get("import") === "project" && MANIFEST) {
     window.history.replaceState(null, "", window.location.pathname);
@@ -151,7 +153,7 @@ export const useStore = create<WorkbenchState>((set, get) => ({
 
   setProject: (p) => {
     get().commit();
-    set({ project: p, selectedClipId: null });
+    set({ project: upgradeLegacyTheme(p, MANIFEST, CARDS), selectedClipId: null });
   },
   select: (id) => set({ selectedClipId: id }),
   setPlayhead: (f) => set({ playhead: Math.max(0, Math.round(f)) }),
