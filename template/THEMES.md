@@ -2,7 +2,7 @@
 
 Open the **主题 (Themes)** tab in the existing left sidebar. Its upper section selects a preset; its lower section edits background, card surface, text, secondary text, accent, subtle fill, and border colors using a color picker or a six-digit HEX value. Press Enter or leave the HEX field to apply it. Invalid input is discarded.
 
-Presets: Ink Press, Modern Light, Midnight, Sage, Coral, and Iris. The last three replace the earlier bright experiments with pale surfaces and restrained accents. Their existing IDs (`solar-pop`, `coral-burst`, `color-play`) remain compatible with saved projects. Coral's neutral surface / dark violet text / coral accent direction draws on [Happy Hues](https://www.happyhues.co/); values are adapted for this fixture, not an exact copy of a complete site.
+Presets: Ink Press, Modern Light, Midnight, Sage, Coral, Iris, Deep Ocean, and Obsidian Violet. Sage, Coral, and Iris replace the earlier bright experiments with pale surfaces and restrained accents. Their existing IDs (`solar-pop`, `coral-burst`, `color-play`) remain compatible with saved projects. Coral's neutral surface / dark violet text / coral accent direction draws on [Happy Hues](https://www.happyhues.co/); values are adapted for this fixture, not an exact copy of a complete site.
 
 - `themeId` and optional `themeColors` are stored in project JSON and browser saves. Changes support undo/redo.
 - Selecting another preset clears palette overrides; **恢复预设** clears them for the current preset. Explicit per-clip edits remain intact and take precedence.

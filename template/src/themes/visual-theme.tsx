@@ -3,7 +3,7 @@ import { staticFile } from 'remotion';
 import palettes from './palettes.json';
 import { paletteAsset } from './palette-assets';
 
-export type ThemeId = 'ink-press' | 'modern-light' | 'midnight' | 'solar-pop' | 'coral-burst' | 'color-play';
+export type ThemeId = 'ink-press' | keyof typeof palettes;
 const font = '"Segoe UI Variable", "Segoe UI", "Microsoft YaHei", Arial, sans-serif';
 export const THEME = {
   id: 'modern-light', page: '#f4f7fb', surface: '#ffffff', field: '#edf2f8',

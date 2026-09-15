@@ -1,4 +1,22 @@
 {
+  "deep-ocean": {
+    "page": "#0b1620",
+    "surface": "#142735",
+    "field": "#1c3443",
+    "text": "#e8f1f5",
+    "muted": "#9fb6c3",
+    "accent": "#7cc8b4",
+    "border": "#304957"
+  },
+  "obsidian-violet": {
+    "page": "#14121b",
+    "surface": "#211d2c",
+    "field": "#2e283d",
+    "text": "#f0edf7",
+    "muted": "#b3a9c5",
+    "accent": "#bca0e8",
+    "border": "#41364f"
+  },
   "modern-light": {
     "page": "#f4f7fb",
     "surface": "#ffffff",
