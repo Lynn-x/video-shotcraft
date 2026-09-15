@@ -13,3 +13,7 @@ This supersedes the bright preset designs described in BRIGHT-VALIDATION.md.
 ## Additional dark presets
 
 Deep Ocean and Obsidian Violet were added using the shared palette source and runtime assets. Both passed preview checks at frames 160, 425, 680, and 913, custom accent editing, reset, timeline preservation, and reload persistence. Hero previews were visually inspected. Template type checking and all six theme tests passed. No additional full-length exports were performed.
+
+## Saved palettes and Vintage Kraft
+
+The palette editor supports named local saves, applying/deleting saved themes, validated version-1 ShotCraft palette JSON imports, and JSON downloads. Browser checks passed save/reload, export/import round-trip, invalid-file rejection, and deletion. Seven pure tests and template type checking passed. Vintage Kraft adds a warm brown palette, fixed-seed SVG paper grain, subtle edge shading and square card details. Its hero preview was visually inspected; full-length exports were not rerun for this addition.

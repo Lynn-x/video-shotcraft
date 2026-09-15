@@ -1,4 +1,13 @@
 {
+  "vintage-kraft": {
+    "page": "#c8aa7d",
+    "surface": "#dfc69e",
+    "field": "#ccb086",
+    "text": "#382a20",
+    "muted": "#6b513b",
+    "accent": "#8b4937",
+    "border": "#ac895e"
+  },
   "deep-ocean": {
     "page": "#0b1620",
     "surface": "#142735",

@@ -63,3 +63,14 @@ test('ordinary manifests and non-theme cards retain their original behavior', ()
   assert.deepEqual(themedProps(manifest,{schema:card.schema},'dark'),{ink:'#111',text:'Title'});
   assert.deepEqual(inheritedProps({},'title',{ink:'#111'}),{ink:'#111'});
 });
+const {parsePalette,paletteFromProject,applyPalette}=require('../src/palettePresets.ts');
+test('portable palettes validate schema and round-trip without changing clips',()=>{
+ const m={themes:[{id:'dark',label:'Dark',palette:{page:'#111111',text:'#eeeeee'}}]};
+ const p={themeId:'dark',themeColors:{text:'#ffffff'},tracks:[]};
+ const saved=paletteFromProject(m,p,'My theme');
+ assert.deepEqual(parsePalette(JSON.stringify(saved),m),saved);
+ assert.equal(applyPalette(p,saved).tracks,p.tracks);
+ for(const bad of [{...saved,version:2},{...saved,baseThemeId:'missing'},{...saved,colors:{page:'url(x)',text:'#eeeeee'}},{...saved,colors:{page:'#111111'}}])assert.throws(()=>parsePalette(JSON.stringify(bad),m));
+ assert.throws(()=>parsePalette('not json',m));
+ assert.throws(()=>parsePalette(' '.repeat(65537),m));
+});

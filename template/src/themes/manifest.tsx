@@ -34,6 +34,7 @@ export const withThemes = <T extends Manifest>(paper: T) => {
     {id: 'color-play', label: '柔和鸢尾 · Iris'},
     {id: 'deep-ocean', label: '深海蓝 · Deep Ocean'},
     {id: 'obsidian-violet', label: '黑曜紫 · Obsidian Violet'},
+    {id: 'vintage-kraft', label: '复古牛皮纸 · Vintage Kraft'},
   ].map(({id, label}) => ({
     id, label, palette: id === 'ink-press' ? undefined : Object.fromEntries(['page','surface','field','text','muted','accent','border'].map(k => [k, resolveTheme(id)[k as keyof ReturnType<typeof resolveTheme>]])), background: id === 'ink-press' ? paper.background : resolveTheme(id).page,
     unitDefaults: Object.fromEntries(units.map(u => {

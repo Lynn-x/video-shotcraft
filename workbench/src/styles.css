@@ -417,3 +417,12 @@ body {
 .theme-color-row input[type=text] { width: 100%; min-width: 0; background: var(--inset); border: 1px solid var(--line); border-radius: 4px; color: var(--text); padding: 5px; font: 11px monospace; }
 .theme-color-row input:focus-visible,.theme-reset:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .theme-color-row input[aria-invalid=true] { border-color: var(--danger); }
+.saved-palettes { margin-top:16px; }
+.saved-palette { display:flex; align-items:center; gap:4px; margin-top:6px; }
+.saved-palette button { background:var(--inset); color:var(--text); border:1px solid var(--line); border-radius:5px; padding:6px; font:inherit; font-size:11px; cursor:pointer; }
+.saved-palette button:first-child { flex:1; min-width:0; text-align:left; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.saved-palette button span { display:inline-block; width:10px; height:10px; border-radius:3px; margin-right:6px; }
+.palette-name { width:100%; margin-top:12px; padding:6px; background:var(--inset); color:var(--text); border:1px solid var(--line); border-radius:4px; font:11px sans-serif; }
+.palette-actions { display:flex; gap:4px; margin-top:7px; }
+.palette-actions .btn { flex:1; min-width:0; padding:5px 2px; font-size:10px; }
+.palette-name:focus-visible,.saved-palette button:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }

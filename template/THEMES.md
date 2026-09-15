@@ -35,3 +35,9 @@ Save this as a props JSON and pass it to `npm run render -- --props=<file>`. Wor
 Run `npm run test:themes` and `npx tsc --noEmit` from `workbench/`, and `npx tsc --noEmit` from `template/`. Tests cover custom palette validation and precedence, reset, edit preservation, legacy saves, and unthemed projects. See `themes/PALETTE-VALIDATION.md` for browser/export coverage.
 
 The fixture describes a fictional research workspace, not a connected service or real research results. Original assets retain their existing attribution/license terms; new fixture code and derived assets use this repository's Apache-2.0 license.
+
+## Save, import and export palettes
+
+Name a palette and click **保存配色** to add it to **我的主题**. These entries live in this browser's local storage, scoped to the current manifest name (up to 50 entries); they are separate from the project timeline. Click an entry to apply it, or its × button to remove it. Export a JSON file to back it up or move it to another browser.
+
+**导入配色** accepts version-1 `shotcraft-palette` JSON exported by this panel, validates the compatible base theme and complete HEX fields, and applies it without changing timeline edits. Click Save afterward to add the imported palette to My Themes. Arbitrary color-site JSON schemas are not yet supported. **导出配色** downloads the current palette, name and base theme ID. Vintage Kraft (`vintage-kraft`) preserves its procedural paper texture when its palette is saved or imported.
