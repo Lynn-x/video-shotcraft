@@ -31,7 +31,7 @@ export const MainComposition: React.FC<{ project: ProjectData }> = ({ project })
             if (!card) return null;
             const Comp = card.component;
             const duration = Math.max(1, Math.round(clip.duration));
-            const props: Record<string, unknown> = themedProps(MANIFEST, card, project.themeId, clip.props);
+            const props: Record<string, unknown> = themedProps(MANIFEST, card, project.themeId, clip.props, project.themeColors);
             // 成片组件按 `duration`/`dur` 算出场淡出：注入 clip 的源时长，拉长/裁短后淡出跟着挪
             if (card.durationProp)
               props[card.durationProp] = Math.max(1, Math.round(clip.inOffset + duration * clip.speed));

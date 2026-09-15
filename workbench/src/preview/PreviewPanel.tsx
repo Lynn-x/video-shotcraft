@@ -16,6 +16,7 @@ const ItemPreview: React.FC<{ item: NonNullable<PreviewItem>; onClose: () => voi
   onClose,
 }) => {
   const themeId = useStore(s => s.project.themeId);
+  const themeColors = useStore(s => s.project.themeColors);
   let body: React.ReactNode = null;
   let title = "";
   if (item.kind === "card") {
@@ -26,7 +27,7 @@ const ItemPreview: React.FC<{ item: NonNullable<PreviewItem>; onClose: () => voi
       body = (
         <Player
           component={card.component}
-          inputProps={themedProps(MANIFEST, card, themeId)}
+          inputProps={themedProps(MANIFEST, card, themeId, {}, themeColors)}
           durationInFrames={Math.max(2, card.durationInFrames)}
           compositionWidth={width}
           compositionHeight={height}

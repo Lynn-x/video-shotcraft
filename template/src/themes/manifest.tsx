@@ -29,11 +29,11 @@ export const withThemes = <T extends Manifest>(paper: T) => {
     {id: 'ink-press', label: '纸质 · Ink Press'},
     {id: 'modern-light', label: '现代浅色 · Modern Light'},
     {id: 'midnight', label: '暗黑 · Midnight'},
-    {id: 'solar-pop', label: '明亮柠檬 · Solar Pop'},
-    {id: 'coral-burst', label: '活力珊瑚 · Coral Burst'},
-    {id: 'color-play', label: '彩色波普 · Color Play'},
+    {id: 'solar-pop', label: '清新鼠尾草 · Sage'},
+    {id: 'coral-burst', label: '珊瑚点缀 · Coral'},
+    {id: 'color-play', label: '柔和鸢尾 · Iris'},
   ].map(({id, label}) => ({
-    id, label, background: id === 'ink-press' ? paper.background : resolveTheme(id).page,
+    id, label, palette: id === 'ink-press' ? undefined : Object.fromEntries(['page','surface','field','text','muted','accent','border'].map(k => [k, resolveTheme(id)[k as keyof ReturnType<typeof resolveTheme>]])), background: id === 'ink-press' ? paper.background : resolveTheme(id).page,
     unitDefaults: Object.fromEntries(units.map(u => {
       const key = u.cardId ?? u.id;
       const defaults = id === 'ink-press' ? u.props ?? {} : sceneDefaults(resolveTheme(id), key, scenes[key]);
@@ -45,9 +45,10 @@ export const withThemes = <T extends Manifest>(paper: T) => {
     const key = u.cardId ?? u.id;
     if (!bridges.has(key)) {
       const Component = u.component;
-      const Bridge: FC<Props> = ({__theme, ...props}) => {
-        const theme = resolveTheme(typeof __theme === 'string' ? __theme : undefined);
-        return <VisualThemeProvider theme={theme.id}><Component {...props} /></VisualThemeProvider>;
+      const Bridge: FC<Props> = ({__theme, __palette, ...props}) => {
+        const colors = typeof __palette === 'object' && __palette !== null ? __palette as Record<string,string> : undefined;
+        const theme = resolveTheme(typeof __theme === 'string' ? __theme : undefined, colors);
+        return <VisualThemeProvider theme={theme.id} colors={colors}><Component {...props} /></VisualThemeProvider>;
       };
       Bridge.displayName = `Themed-${key}`;
       bridges.set(key, Bridge);
@@ -59,6 +60,6 @@ export const withThemes = <T extends Manifest>(paper: T) => {
       })),
     };
   };
-  return {...paper, themeProp: '__theme', defaultTheme: 'ink-press', themes: presets,
+  return {...paper, themeProp: '__theme', paletteProp: '__palette', defaultTheme: 'ink-press', themes: presets,
     shots: paper.shots.map(wrap), transitions: paper.transitions.map(wrap), captions: paper.captions.map(wrap)};
 };

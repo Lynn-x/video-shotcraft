@@ -15,6 +15,21 @@ const manifest = {themeProp:'__theme', defaultTheme:'paper', themes:[
   {id:'paper',background:'#fff',unitDefaults:{title:{ink:'#111'}}},
   {id:'dark',background:'#111',unitDefaults:{title:{ink:'#eee'}}},
 ]};
+test('palette edits reach props and background, preserve clip overrides, and reset on preset switch', () => {
+  const m={...manifest,paletteProp:'__palette',themes:[{id:'dark',palette:{page:'#111111',text:'#eeeeee',accent:'#999999'},unitDefaults:{title:{ink:'#eeeeee',amber:'#999999'}}}]};
+  const colors={page:'#fefefe',text:'#222222',accent:'#2255aa',font:'evil',border:'url(x)'};
+  const props=themedProps(m,card,'dark',{ink:'#123456'},colors);
+  assert.equal(props.ink,'#123456');
+  assert.equal(props.amber,'#2255aa');
+  assert.deepEqual(props.__palette,{page:'#fefefe',text:'#222222',accent:'#2255aa'});
+  assert.equal(themedBackground({themeId:'dark',themeColors:colors},m),'#fefefe');
+  const project={themeId:'dark',themeColors:colors,tracks:[]};
+  const reset=switchTheme(project,m,'dark');
+  assert.equal(reset.themeColors,undefined);
+  assert.equal(reset.tracks,project.tracks);
+  assert.equal(JSON.parse(JSON.stringify(project)).themeColors.accent,'#2255aa');
+  assert.equal(themedProps(m,{schema:[]},'dark',{},colors).__palette,undefined);
+});
 test('a theme change preserves the complete edit tree and round-trips in JSON', () => {
   const project = {name:'Edited',tracks:[{id:'t',clips:[{start:17,duration:90,props:{text:'My copy',ink:'#c0ffee'}}]}]};
   const changed = switchTheme(project, manifest, 'dark');

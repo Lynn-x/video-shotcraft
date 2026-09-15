@@ -83,6 +83,7 @@ const LazyLoopVideo: React.FC<{ src: string }> = ({ src }) => {
  *  首屏像在闪光灯下；大图反复解码还刷出一串 EncodingError。 */
 const LazyCardLoop: React.FC<{ card: CardDef }> = ({ card }) => {
   const themeId = useStore(s => s.project.themeId);
+  const themeColors = useStore(s => s.project.themeColors);
   const { ref, visible } = useVisible();
   const { width, height } = cardSize(card);
   const player = useRef<PlayerRef>(null);
@@ -119,7 +120,7 @@ const LazyCardLoop: React.FC<{ card: CardDef }> = ({ card }) => {
         <Player
           ref={player}
           component={card.component}
-          inputProps={themedProps(MANIFEST, card, themeId)}
+          inputProps={themedProps(MANIFEST, card, themeId, {}, themeColors)}
           durationInFrames={total}
           compositionWidth={width}
           compositionHeight={height}

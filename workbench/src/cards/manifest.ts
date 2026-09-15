@@ -47,6 +47,7 @@ export type WorkbenchManifest = {
   defaultTheme?: string;
   /** Prop injected into themed components in both preview and export. */
   themeProp?: string;
+  paletteProp?: string;
   name: string;
   fps: number;
   width: number;
@@ -74,6 +75,7 @@ export type WorkbenchManifest = {
 };
 
 export type ManifestTheme = {
+  palette?: Record<string, string>;
   id: string;
   label: string;
   background?: string;

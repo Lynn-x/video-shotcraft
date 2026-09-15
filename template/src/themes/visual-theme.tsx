@@ -1,5 +1,7 @@
 import { createContext, useContext, type FC, type ReactNode } from 'react';
 import { staticFile } from 'remotion';
+import palettes from './palettes.json';
+import { paletteAsset } from './palette-assets';
 
 export type ThemeId = 'ink-press' | 'modern-light' | 'midnight' | 'solar-pop' | 'coral-burst' | 'color-play';
 const font = '"Segoe UI Variable", "Segoe UI", "Microsoft YaHei", Arial, sans-serif';
@@ -10,44 +12,31 @@ export const THEME = {
   accentRgb: '37,99,235', stage: '#142238', font,
 };
 export type VisualTheme = typeof THEME;
+const rgb = (hex: string) => [1,3,5].map(i => parseInt(hex.slice(i,i+2),16)).join(',');
 export const VISUAL_THEMES: Record<ThemeId, VisualTheme> = {
-  'ink-press': {...THEME, id: 'ink-press', page: '#f2eee6'},
-  'modern-light': THEME,
-  'solar-pop': {
-    id: 'solar-pop', page: '#fff36b', surface: '#fffde8', field: '#e5f6bd',
-    text: '#182b24', muted: '#4d6045', accent: '#166447', border: '#a3b765',
-    shadowRgb: '24,43,36', pageRgb: '255,243,107', lightRgb: '255,253,232',
-    accentRgb: '22,100,71', stage: '#deef8c', font,
-  },
-  'coral-burst': {
-    id: 'coral-burst', page: '#ff9c83', surface: '#fff5ed', field: '#ffe1d3',
-    text: '#442139', muted: '#805267', accent: '#ad2450', border: '#dc947e',
-    shadowRgb: '68,33,57', pageRgb: '255,156,131', lightRgb: '255,245,237',
-    accentRgb: '173,36,80', stage: '#ed7792', font,
-  },
-  'color-play': {
-    id: 'color-play', page: '#c8b8ff', surface: '#fff9ef', field: '#e6dcff',
-    text: '#30205a', muted: '#65547f', accent: '#6134bb', border: '#aa90d5',
-    shadowRgb: '48,32,90', pageRgb: '200,184,255', lightRgb: '255,249,239',
-    accentRgb: '97,52,187', stage: '#94e0d8', font,
-  },
-  midnight: {
-    id: 'midnight', page: '#090f1a', surface: '#111c2c', field: '#162438',
-    text: '#f0f5ff', muted: '#9babbe', accent: '#61d9ef', border: '#293b52',
-    shadowRgb: '0,4,12', pageRgb: '9,15,26', lightRgb: '97,217,239',
-    accentRgb: '97,217,239', stage: '#182c42', font,
-  },
+  'ink-press': {...THEME, id:'ink-press', page:'#f2eee6'},
+  ...Object.fromEntries(Object.entries(palettes).map(([id,p]) => [id, {...THEME,...p,id,
+    pageRgb:rgb(p.page),accentRgb:rgb(p.accent),shadowRgb:rgb(p.text),lightRgb:rgb(p.surface),stage:p.field}]))
+} as Record<ThemeId, VisualTheme>;
+export const resolveTheme = (id?: string, colors?: Record<string, string>): VisualTheme => {
+  const base = VISUAL_THEMES[id as ThemeId] ?? VISUAL_THEMES['ink-press'];
+  if (base.id === 'ink-press' || !colors) return base;
+  const valid = Object.fromEntries(Object.entries(colors).filter(([k,v]) => k in palettes['modern-light'] && /^#[0-9a-f]{6}$/i.test(v)));
+  const p = {...base,...valid};
+  return {...p,pageRgb:rgb(p.page),accentRgb:rgb(p.accent),shadowRgb:rgb(p.text),lightRgb:rgb(p.surface),stage:p.field};
 };
-export const resolveTheme = (id?: string): VisualTheme =>
-  VISUAL_THEMES[id as ThemeId] ?? VISUAL_THEMES['ink-press'];
 const ThemeContext = createContext(VISUAL_THEMES['ink-press']);
-export const VisualThemeProvider: FC<{theme?: string; children: ReactNode}> = ({theme, children}) =>
-  <ThemeContext.Provider value={resolveTheme(theme)}>{children}</ThemeContext.Provider>;
+export const VisualThemeProvider: FC<{theme?: string; colors?: Record<string,string>; children: ReactNode}> = ({theme, colors, children}) =>
+  <ThemeContext.Provider value={resolveTheme(theme, colors)}>{children}</ThemeContext.Provider>;
 export const useVisualTheme = () => useContext(ThemeContext);
 export const rgba = (color: string, alpha: number) =>
   `color-mix(in srgb, ${color} ${Math.max(0, Math.min(1, alpha)) * 100}%, transparent)`;
-export const themeAsset = (theme: VisualTheme, src: string) =>
-  staticFile(src.startsWith('textures/live/') && theme.id !== 'ink-press' ? `themes/${theme.id}/${src}` : src);
+export const themeAsset = (theme: VisualTheme, src: string) => {
+  if (src.startsWith('textures/live/') && theme.id !== 'ink-press') {
+    return paletteAsset(theme, src.slice('textures/live/'.length)) ?? staticFile('themes/' + theme.id + '/' + src);
+  }
+  return staticFile(src);
+};
 /** Material adapter for existing Ink Press CSS. Returning the input verbatim keeps
  * the default preset backward compatible, including its original gradients. */
 export const themePaint = (theme: VisualTheme, css: string): string => {

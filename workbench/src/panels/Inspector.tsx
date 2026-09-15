@@ -182,7 +182,7 @@ export const Inspector: React.FC = () => {
               <Row key={field.key} label={field.label}>
                 <PropControl
                   field={field}
-                  value={themedProps(MANIFEST, card, project.themeId, clip.props)[field.key] ?? field.default}
+                  value={themedProps(MANIFEST, card, project.themeId, clip.props, project.themeColors)[field.key] ?? field.default}
                   onChange={(v) => updateClipProps(clip.id, { [field.key]: v })}
                   onBegin={begin}
                 />

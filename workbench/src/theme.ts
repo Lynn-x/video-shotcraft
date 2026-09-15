@@ -7,11 +7,15 @@ export const selectedTheme = (m: WorkbenchManifest | null, id?: string) =>
   m?.themes?.find(t => t.id === id) ?? m?.themes?.find(t => t.id === m.defaultTheme) ?? m?.themes?.[0];
 
 /** Same precedence in the inspector, all players, and the exported film. */
-export const themedProps = (m: WorkbenchManifest | null, card: CardDef, id?: string, overrides: Record<string, unknown> = {}) => {
+export const themedProps = (m: WorkbenchManifest | null, card: CardDef, id?: string, overrides: Record<string, unknown> = {}, colors?: Record<string, string>) => {
   const theme = selectedTheme(m, id);
+  const palette = validThemeColors(m, id, colors);
+  const aliases: Record<string,string> = {paper:"page",ink:"text",color:"text",muted:"muted",amber:"accent",accent:"accent"};
+  const custom = Object.fromEntries(Object.entries(theme?.unitDefaults?.[card.themeKey ?? ""] ?? {}).filter(([k]) => palette[aliases[k]]).map(([k]) => [k,palette[aliases[k]]]));
   return {...defaultsOf(card),
-    ...(card.themeKey ? theme?.unitDefaults?.[card.themeKey] : {}), ...overrides,
+    ...(card.themeKey ? theme?.unitDefaults?.[card.themeKey] : {}), ...(card.themeKey ? custom : {}), ...overrides,
     ...(card.themeKey && m?.themeProp ? {[m.themeProp]: theme?.id} : {}),
+    ...(card.themeKey && m?.paletteProp && Object.keys(palette).length ? {[m.paletteProp]: palette} : {}),
   };
 };
 
@@ -33,7 +37,12 @@ export const upgradeLegacyTheme = (project: ProjectData, m: WorkbenchManifest | 
 
 export const switchTheme = (project: ProjectData, m: WorkbenchManifest | null, id: string): ProjectData => {
   if (!m?.themes?.some(t => t.id === id)) return project;
-  return {...project, themeId: id};
+  return {...project, themeId: id, themeColors: undefined};
 };
 export const themedBackground = (project: ProjectData, m: WorkbenchManifest | null) =>
-  project.themeId ? selectedTheme(m, project.themeId)?.background ?? project.background : project.background;
+  validThemeColors(m, project.themeId, project.themeColors).page ?? (project.themeId ? selectedTheme(m, project.themeId)?.background ?? project.background : project.background);
+
+export const validThemeColors = (m: WorkbenchManifest | null, id?: string, colors?: Record<string,string>) => {
+ const palette = selectedTheme(m,id)?.palette;
+ return Object.fromEntries(Object.entries(colors ?? {}).filter(([k,v]) => palette && Object.prototype.hasOwnProperty.call(palette,k) && typeof v === 'string' && /^#[0-9a-f]{6}$/i.test(v)));
+};

@@ -401,3 +401,19 @@ body {
 .theme-option-label > span { color: var(--text-dim); font-size: 10px; }
 .theme-option.active .theme-option-label > span { color: var(--accent); }
 .theme-panel-note { margin-top: 16px; }
+
+/* Presets and palette editing share the existing sidebar. */
+.theme-options { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 7px; }
+.theme-option { padding: 6px; }
+.theme-palette { height: 26px; }
+.theme-option-label { margin-top: 6px; gap: 2px; }
+.theme-option-label strong { font-size: 11px; }
+.theme-editor { margin-top: 20px; padding-top: 15px; border-top: 1px solid var(--line); }
+.theme-editor-heading { display: flex; align-items: center; justify-content: space-between; gap: 5px; }
+.theme-reset { background: none; border: 0; color: var(--accent); font: inherit; font-size: 10px; cursor: pointer; padding: 3px 0; }
+.theme-reset:disabled { color: var(--text-dim); opacity: .5; cursor: default; }
+.theme-color-row { display: grid; grid-template-columns: minmax(0,1fr) 24px 74px; gap: 6px; align-items: center; margin: 9px 0; font-size: 11px; }
+.theme-color-row input[type=color] { width: 24px; height: 26px; padding: 0; border: 0; background: transparent; cursor: pointer; }
+.theme-color-row input[type=text] { width: 100%; min-width: 0; background: var(--inset); border: 1px solid var(--line); border-radius: 4px; color: var(--text); padding: 5px; font: 11px monospace; }
+.theme-color-row input:focus-visible,.theme-reset:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.theme-color-row input[aria-invalid=true] { border-color: var(--danger); }
