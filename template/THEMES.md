@@ -1,6 +1,6 @@
 # Visual themes
 
-The template offers **Ink Press**, **Modern Light**, and **Midnight**. In the workbench, click a theme in the top bar to preview it immediately. Export uses the same selection. There is one scene tree and one timeline; switching does not render a new video or copy a project.
+The template offers **Ink Press**, **Modern Light**, and **Midnight**. In the workbench, open the **主题 (Themes)** tab in the left sidebar and click a theme to preview it immediately. Export uses the same selection. There is one scene tree and one timeline; switching does not render a new video or copy a project.
 
 - Ink Press remains the default, including for old projects.
 - A project stores only `themeId`. Switching is undoable and survives JSON export/import and browser reload.

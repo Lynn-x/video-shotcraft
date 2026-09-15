@@ -11,11 +11,13 @@ import { sfxUsage } from "../projectImport";
 import { BGM_LIB, MEDIA_ITEMS, SFX_LIB } from "../mediaManifest";
 import { PROJ_DIR, PROJ_HAS_MANIFEST, PROJ_LINKED } from "../projMeta";
 import { setDragPayload } from "../dnd";
+import { ThemePanel } from './ThemePanel';
 
 const TABS = [
   { id: "media", label: "素材" },
   { id: "cards", label: "动效库" },
   { id: "sfx", label: "音效" },
+  { id: "themes", label: "主题" },
 ] as const;
 type TabId = (typeof TABS)[number]["id"];
 
@@ -252,7 +254,11 @@ export const LibraryPanel: React.FC = () => {
           <button
             key={t.id}
             className={`lib-tab${tab === t.id ? " on" : ""}`}
-            onClick={() => setTab(t.id)}
+            aria-pressed={tab === t.id}
+            onClick={() => {
+              setTab(t.id);
+              if (t.id === 'themes') setPreview(null);
+            }}
           >
             {t.label}
           </button>
@@ -260,6 +266,7 @@ export const LibraryPanel: React.FC = () => {
       </div>
 
       <div className="library-list">
+        {tab === 'themes' && <ThemePanel />}
         {tab === "media" && (
           <>
             {MANIFEST ? (
@@ -384,11 +391,13 @@ export const LibraryPanel: React.FC = () => {
       </div>
 
       <div className="lib-foot dim">
+        {tab === 'themes' ? '切换主题可撤销 · 随工程自动保存' : <>
         动效 {motionCards.length} 卡（{motionCards.filter((c) => c.schema.length > 0).length} 张可调参）
         · 音效库 {SFX_LIB.length}
         {PROJ_LINKED && PROJ_HAS_MANIFEST ? ` · 成片单元 ${projectCards.length}` : ""}
         <br />
         点击预览 · 拖拽到时间轨添加
+        </>}
       </div>
     </div>
   );
