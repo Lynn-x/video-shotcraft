@@ -29,6 +29,9 @@ export const withThemes = <T extends Manifest>(paper: T) => {
     {id: 'ink-press', label: '纸质 · Ink Press'},
     {id: 'modern-light', label: '现代浅色 · Modern Light'},
     {id: 'midnight', label: '暗黑 · Midnight'},
+    {id: 'solar-pop', label: '明亮柠檬 · Solar Pop'},
+    {id: 'coral-burst', label: '活力珊瑚 · Coral Burst'},
+    {id: 'color-play', label: '彩色波普 · Color Play'},
   ].map(({id, label}) => ({
     id, label, background: id === 'ink-press' ? paper.background : resolveTheme(id).page,
     unitDefaults: Object.fromEntries(units.map(u => {

@@ -1,8 +1,9 @@
 # Visual themes
 
-The template offers **Ink Press**, **Modern Light**, and **Midnight**. In the workbench, open the **主题 (Themes)** tab in the left sidebar and click a theme to preview it immediately. Export uses the same selection. There is one scene tree and one timeline; switching does not render a new video or copy a project.
+The template offers **Ink Press**, **Modern Light**, **Midnight**, **Solar Pop**, **Coral Burst**, and **Color Play**. In the workbench, open the **主题 (Themes)** tab in the left sidebar and click a theme to preview it immediately. Export uses the same selection. There is one scene tree and one timeline; switching does not render a new video or copy a project.
 
 - Ink Press remains the default, including for old projects.
+- Solar Pop pairs a lemon-yellow canvas with deep green; Coral Burst pairs coral with berry accents; Color Play combines lavender with mint, pink, and yellow cards.
 - A project stores only `themeId`. Switching is undoable and survives JSON export/import and browser reload.
 - Text, timing, audio, and explicit per-clip style edits remain intact. A custom color can intentionally override a preset.
 - Pre-theme JSON is normalized once when loaded: values matching the original defaults become inherited styles. After migration, explicit edits are never inferred or discarded.
@@ -17,7 +18,7 @@ npm run render -- --props=themes/modern-light.json
 npm run render -- --props=themes/midnight.json
 ```
 
-Both use the existing `AiflPromo` composition. Omitting `theme` selects Ink Press; unknown IDs fall back to Ink Press.
+All presets use the existing `AiflPromo` composition. Omitting `theme` selects Ink Press; unknown IDs fall back to Ink Press.
 
 ## Implementation
 

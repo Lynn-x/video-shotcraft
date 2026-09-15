@@ -31,7 +31,7 @@ beat-synced cuts, and film-grade SFX included.
 
 ## ✨ What's new
 
-- **One-click film themes:** switch the template between Ink Press, Modern Light, and Midnight in the workbench while keeping your edits. [Theme guide](template/THEMES.md).
+- **One-click film themes:** switch the template between Ink Press, Modern Light, Midnight, Solar Pop, Coral Burst, and Color Play in the workbench while keeping your edits. [Theme guide](template/THEMES.md).
 
 > [!IMPORTANT]
 > ### 🔥 2026-08 · New in the series: **video-talkcraft**, for narration videos

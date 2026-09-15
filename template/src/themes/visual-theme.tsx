@@ -1,7 +1,7 @@
 import { createContext, useContext, type FC, type ReactNode } from 'react';
 import { staticFile } from 'remotion';
 
-export type ThemeId = 'ink-press' | 'modern-light' | 'midnight';
+export type ThemeId = 'ink-press' | 'modern-light' | 'midnight' | 'solar-pop' | 'coral-burst' | 'color-play';
 const font = '"Segoe UI Variable", "Segoe UI", "Microsoft YaHei", Arial, sans-serif';
 export const THEME = {
   id: 'modern-light', page: '#f4f7fb', surface: '#ffffff', field: '#edf2f8',
@@ -13,6 +13,24 @@ export type VisualTheme = typeof THEME;
 export const VISUAL_THEMES: Record<ThemeId, VisualTheme> = {
   'ink-press': {...THEME, id: 'ink-press', page: '#f2eee6'},
   'modern-light': THEME,
+  'solar-pop': {
+    id: 'solar-pop', page: '#fff36b', surface: '#fffde8', field: '#e5f6bd',
+    text: '#182b24', muted: '#4d6045', accent: '#166447', border: '#a3b765',
+    shadowRgb: '24,43,36', pageRgb: '255,243,107', lightRgb: '255,253,232',
+    accentRgb: '22,100,71', stage: '#deef8c', font,
+  },
+  'coral-burst': {
+    id: 'coral-burst', page: '#ff9c83', surface: '#fff5ed', field: '#ffe1d3',
+    text: '#442139', muted: '#805267', accent: '#ad2450', border: '#dc947e',
+    shadowRgb: '68,33,57', pageRgb: '255,156,131', lightRgb: '255,245,237',
+    accentRgb: '173,36,80', stage: '#ed7792', font,
+  },
+  'color-play': {
+    id: 'color-play', page: '#c8b8ff', surface: '#fff9ef', field: '#e6dcff',
+    text: '#30205a', muted: '#65547f', accent: '#6134bb', border: '#aa90d5',
+    shadowRgb: '48,32,90', pageRgb: '200,184,255', lightRgb: '255,249,239',
+    accentRgb: '97,52,187', stage: '#94e0d8', font,
+  },
   midnight: {
     id: 'midnight', page: '#090f1a', surface: '#111c2c', field: '#162438',
     text: '#f0f5ff', muted: '#9babbe', accent: '#61d9ef', border: '#293b52',
