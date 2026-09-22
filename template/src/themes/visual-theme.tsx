@@ -39,6 +39,21 @@ export const themeAsset = (theme: VisualTheme, src: string) => {
   }
   return staticFile(src);
 };
+// Roles of the original scene materials. Warm light is illumination, not an
+// amber UI accent; unknown RGB colors are left alone instead of guessed.
+const INK_RGB_ROLES: Record<string, 'pageRgb' | 'lightRgb' | 'accentRgb' | 'shadowRgb'> = {
+  '250,247,242': 'pageRgb',
+  '255,190,120': 'lightRgb', '255,214,150': 'lightRgb',
+  '255,240,210': 'lightRgb', '255,240,214': 'lightRgb',
+  '255,241,214': 'lightRgb', '255,244,224': 'lightRgb',
+  '255,246,228': 'lightRgb', '255,248,232': 'lightRgb',
+  '255,248,235': 'lightRgb', '255,255,255': 'lightRgb',
+  '180,120,50': 'accentRgb',
+  '0,0,0': 'shadowRgb', '30,25,18': 'shadowRgb',
+  '31,41,55': 'shadowRgb', '40,30,20': 'shadowRgb',
+  '60,45,30': 'shadowRgb', '62,48,32': 'shadowRgb', '70,56,38': 'shadowRgb',
+};
+
 /** Material adapter for existing Ink Press CSS. Returning the input verbatim keeps
  * the default preset backward compatible, including its original gradients. */
 export const themePaint = (theme: VisualTheme, css: string): string => {
@@ -57,11 +72,9 @@ export const themePaint = (theme: VisualTheme, css: string): string => {
       const alpha = cssColor.match(/\/\s*([\d.]+)(%)?/);
       return alpha ? rgba(color, Number(alpha[1]) / (alpha[2] ? 100 : 1)) : color;
     })
-    .replace(/rgba?\(\s*(\d+),\s*(\d+),\s*(\d+)/g, (_c, r, g, b) => {
-      const channels = +r > 230 && +g > 230 && +b > 220 ? theme.pageRgb
-        : +r > 120 && +r > +b * 1.15 ? theme.accentRgb
-        : +r < 90 && +g < 90 && +b < 90 ? theme.shadowRgb : `${r},${g},${b}`;
-      return `rgba(${channels}`;
+    .replace(/(rgba?)\(\s*(\d+),\s*(\d+),\s*(\d+)/g, (cssColor, fn, r, g, b) => {
+      const role = INK_RGB_ROLES[`${+r},${+g},${+b}`];
+      return role ? `${fn}(${theme[role]}` : cssColor;
     });
 };
 
@@ -72,7 +85,7 @@ export const sceneDefaults = <T extends Record<string, unknown>>(theme: VisualTh
     [k, typeof v === 'string' && /^(#|oklch|rgba)/.test(v) ? themePaint(theme, v) : v]));
   const sizes: Record<string, Record<string, unknown>> = {
     morning: {wordmarkSize: 116, kickerSize: 44}, outro: {wordmarkSize: 124, taglineSize: 44},
-    caption: {fontSize: 76, color: theme.text}, wbr: {kicker: ''},
+    caption: {fontSize: 36, bottom: 32, color: theme.text}, wbr: {kickerSize: 20},
   };
   return {...mapped, ...sizes[key]} as T;
 };

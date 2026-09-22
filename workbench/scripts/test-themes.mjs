@@ -2,13 +2,15 @@ import { createRequire } from 'node:module';
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { runInNewContext } from 'node:vm';
 import ts from 'typescript';
 
 // Run the small pure state/props adapter using the project's existing compiler.
 const require = createRequire(import.meta.url);
 require.extensions['.ts'] = (mod, filename) => mod._compile(ts.transpileModule(fs.readFileSync(filename, 'utf8'), {
-  compilerOptions: {module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020, esModuleInterop: true},
+  compilerOptions: {module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020, esModuleInterop: true, jsx: ts.JsxEmit.ReactJSX},
 }).outputText, filename);
+require.extensions['.tsx'] = require.extensions['.ts'];
 const {switchTheme, themedProps, inheritedProps, selectedTheme, themedBackground, upgradeLegacyTheme} = require('../src/theme.ts');
 const card = {themeKey: 'title', schema: [{key:'ink',default:'#111'},{key:'text',default:'Title'}]};
 const manifest = {themeProp:'__theme', defaultTheme:'paper', themes:[
@@ -89,4 +91,72 @@ test('every editable texture is CSS-url-safe, including procedural kraft grain',
   assert.ok(decoded.includes('var(--'));
   if(id==='vintage-kraft')assert.ok(decoded.includes('url(#kraft-grain)'));
  }
+});
+
+const {resolveTheme,themePaint}=require('../../template/src/themes/visual-theme.tsx');
+const {WORKBENCH}=require('../../template/src/workbench.ts');
+
+test('illumination, accents and shadows have distinct roles and preserve opacity',()=>{
+ const warmLights=['255,190,120','255,214,150','255,240,210','255,240,214','255,241,214','255,244,224','255,246,228','255,248,232','255,248,235','255,255,255'];
+ for(const id of Object.keys(palettes)){
+  const theme=resolveTheme(id,{surface:'#eeeeee',accent:'#ff00ff',text:'#123456',page:'#abcdef'});
+  for(const rgb of warmLights)assert.equal(themePaint(theme,`rgba(${rgb},0.42)`),'rgba(238,238,238,0.42)');
+  assert.equal(themePaint(theme,'rgba(180,120,50,.35)'),'rgba(255,0,255,.35)');
+  assert.equal(themePaint(theme,'rgba(40,30,20,0.18)'),'rgba(18,52,86,0.18)');
+  assert.equal(themePaint(theme,'rgb(250,247,242)'),'rgb(171,205,239)');
+  assert.equal(themePaint(theme,'rgba(220, 130, 50, .7)'),'rgba(220, 130, 50, .7)');
+ }
+ const original='radial-gradient(rgba(255,241,214,0.42), rgba(180,120,50,.35), rgba(40,30,20,0.18))';
+ assert.equal(themePaint(resolveTheme('ink-press'),original),original);
+});
+
+test('preset switches preserve weekly copy and share compact caption defaults',()=>{
+ const wbr=WORKBENCH.shots.find(u=>u.id==='wbr');
+ const weeklyCard={themeKey:'wbr',schema:wbr.schema};
+ const imported=inheritedProps(WORKBENCH,'wbr',wbr.props);
+ assert.equal(imported.kicker,'Weekly Brief · 2026-W28');
+ const caption=WORKBENCH.captions[0];
+ const captionCard={themeKey:'caption',schema:caption.schema};
+ for(const theme of WORKBENCH.themes){
+  assert.equal(theme.unitDefaults.wbr.kicker,undefined);
+  assert.equal(themedProps(WORKBENCH,weeklyCard,theme.id,imported).kicker,imported.kicker);
+  assert.equal(themedProps(WORKBENCH,weeklyCard,theme.id,{kicker:'Our weekly report'}).kicker,'Our weekly report');
+  assert.equal(themedProps(WORKBENCH,weeklyCard,theme.id,{kicker:''}).kicker,'');
+  const props=themedProps(WORKBENCH,captionCard,theme.id,inheritedProps(WORKBENCH,'caption',caption.props));
+  assert.equal(props.fontSize,theme.id==='ink-press'?22:36);
+  assert.equal(props.bottom,theme.id==='ink-press'?72:32);
+  assert.equal(themedProps(WORKBENCH,captionCard,theme.id,{fontSize:44,bottom:90}).bottom,90);
+ }
+});
+
+test('live palette updates preserve selection and use the gesture checkpoint for undo/redo',()=>{
+ const project={themeId:'dark',tracks:[{id:'track',clips:[{id:'clip',cardId:'title',props:{text:'Keep me'}}]}]};
+ const mod={exports:{}};
+ const mockModules={
+  './cards/registry':{CARDS:{}}, './demoProject':{demoProject:()=>project},
+  './cards/projectCards':{MANIFEST:null}, './cards/manifest':{manifestKey:()=>''},
+  './projectImport':{buildProjectFromManifest:()=>project},
+ };
+ const code=ts.transpileModule(fs.readFileSync(new URL('../src/store.ts',import.meta.url),'utf8'),{
+  compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020},
+ }).outputText;
+ runInNewContext(code,{
+  module:mod,exports:mod.exports,URLSearchParams,
+  require:id=>mockModules[id]??(id.startsWith('./')?require(`../src/${id.slice(2)}.ts`):require(id)),
+  localStorage:{getItem:()=>null,setItem:()=>{}},
+  window:{location:{search:'',pathname:'/'},addEventListener:()=>{}},
+  document:{addEventListener:()=>{}},setTimeout:()=>0,clearTimeout:()=>{},
+ });
+ const store=mod.exports.useStore;
+ store.getState().select('clip');
+ store.getState().commit();
+ for(let i=1;i<=80;i++)store.getState().setThemeColors({accent:`#${i.toString(16).padStart(6,'0')}`});
+ assert.equal(store.getState().past.length,1);
+ assert.equal(store.getState().selectedClipId,'clip');
+ assert.equal(store.getState().project.tracks,project.tracks);
+ assert.equal(store.getState().project.themeColors.accent,'#000050');
+ store.getState().undo();
+ assert.equal(store.getState().project.themeColors,undefined);
+ store.getState().redo();
+ assert.equal(store.getState().project.themeColors.accent,'#000050');
 });

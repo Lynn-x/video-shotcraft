@@ -16,11 +16,11 @@ const scenes: Record<string, Props> = {
   morning: SCENE_OPEN_DEFAULTS, table: SCENE_FLYIN_DEFAULTS,
   macro: SCENE_DETAIL_DEFAULTS, chart: SCENE_PAPERS_DEFAULTS,
   wbr: SCENE_WBR_DEFAULTS, outro: SCENE_OUTRO_DEFAULTS,
-  'title-card': TITLE_CARD_DEFAULTS, 'caption': {...CAPTION_DEFAULTS, bottom: 52},
+  'title-card': TITLE_CARD_DEFAULTS, 'caption': CAPTION_DEFAULTS,
   'flash-cut': {},
 };
-const styleKey = (key: string, unitKey: string) =>
-  /Size$/.test(key) || ['ink','amber','muted','paper','accent','color','bottom'].includes(key) || (unitKey === 'wbr' && key === 'kicker');
+const styleKey = (key: string) =>
+  /Size$/.test(key) || ['ink','amber','muted','paper','accent','color','bottom'].includes(key);
 
 /** Optional presets over the same scene components, with one provider per clip. */
 export const withThemes = <T extends Manifest>(paper: T) => {
@@ -40,7 +40,7 @@ export const withThemes = <T extends Manifest>(paper: T) => {
     unitDefaults: Object.fromEntries(units.map(u => {
       const key = u.cardId ?? u.id;
       const defaults = id === 'ink-press' ? u.props ?? {} : sceneDefaults(resolveTheme(id), key, scenes[key]);
-      return [key, Object.fromEntries(Object.entries(defaults).filter(([k]) => styleKey(k, key)))];
+      return [key, Object.fromEntries(Object.entries(defaults).filter(([k]) => styleKey(k)))];
     })),
   }));
   const bridges = new Map<string, FC<Props>>();

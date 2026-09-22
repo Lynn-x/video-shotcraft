@@ -4,9 +4,10 @@ Open the **主题 (Themes)** tab in the existing left sidebar. Its upper section
 
 Presets: Ink Press, Modern Light, Midnight, Sage, Coral, Iris, Deep Ocean, Obsidian Violet, and Vintage Kraft. Sage, Coral, and Iris replace the earlier bright experiments with pale surfaces and restrained accents. Their existing IDs (`solar-pop`, `coral-burst`, `color-play`) remain compatible with saved projects. Coral's neutral surface / dark violet text / coral accent direction draws on [Happy Hues](https://www.happyhues.co/); values are adapted for this fixture, not an exact copy of a complete site.
 
-- `themeId` and optional `themeColors` are stored in project JSON and browser saves. Changes support undo/redo.
+- `themeId` and optional `themeColors` are stored in project JSON and browser saves. Changes support undo/redo. A continuous color-picker gesture creates one undo step and keeps the current clip selected.
 - Selecting another preset clears palette overrides; **恢复预设** clears them for the current preset. Explicit per-clip edits remain intact and take precedence.
 - Ink Press preserves its original raster screenshots and has no palette editor. Select another preset to recolor both the film and its demo UI assets.
+- Editable presets preserve the weekly heading in the report-header band and use compact 36px captions near the bottom. Explicit per-clip text, size, and position edits still take precedence.
 - Themes apply to the adapted template scenes. Ordinary Gallery cards and the editor's own chrome are not globally recolored.
 - Old projects without a theme marker are normalized once; explicit edits are never inferred or discarded after migration.
 
@@ -32,7 +33,7 @@ Save this as a props JSON and pass it to `npm run render -- --props=<file>`. Wor
 
 ## Verification and provenance
 
-Run `npm run test:themes` and `npx tsc --noEmit` from `workbench/`, and `npx tsc --noEmit` from `template/`. Tests cover custom palette validation and precedence, reset, edit preservation, legacy saves, and unthemed projects. Browser/export validation results are recorded in PR #80.
+After installing dependencies in both `workbench/` and `template/`, run `npm run test:themes` and `npx tsc --noEmit` from `workbench/`, and `npx tsc --noEmit` from `template/`. Tests cover custom palette validation and precedence, reset, edit preservation, legacy saves, unthemed projects, palette history, preserved weekly copy, caption defaults, and separate light/accent/shadow roles. Browser/export validation results are recorded in PR #80.
 
 The fixture describes a fictional research workspace, not a connected service or real research results. Original assets retain their existing attribution/license terms; new fixture code and derived assets use this repository's Apache-2.0 license.
 

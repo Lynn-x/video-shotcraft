@@ -193,7 +193,7 @@ const PAPER_WORKBENCH = {
     from: c.from,
     duration: c.duration,
     component: CaptionUnit as FC<Record<string, unknown>>,
-    props: { text: c.text, bottom: 72, ...D.caption },
+    props: { text: c.text, ...D.caption },
     schema: SCHEMAS.caption,
     durationProp: 'duration',
     cardId: 'caption',

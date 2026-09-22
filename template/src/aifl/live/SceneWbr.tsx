@@ -304,13 +304,13 @@ export const SceneWbr: React.FC<SceneWbrProps> = (props) => {
       <div
         style={{
           position: 'absolute',
-          top: 16, // inside the page's empty top-nav band at full-page framing,
-          right: 96, // clear of the comment rail's own header
+          top: paperStyle ? 16 : 72, // use the empty report-header band for editable themes
+          right: paperStyle ? 96 : 320, // clear of the comment rail's header
 
           textAlign: 'right',
           fontFamily: MONO,
           fontSize: kickerSize,
-          letterSpacing: '0.14em',
+          letterSpacing: paperStyle ? '0.14em' : '0.08em',
           color: muted,
           textTransform: 'uppercase',
           opacity: kick,

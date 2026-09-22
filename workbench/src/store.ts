@@ -79,6 +79,8 @@ interface WorkbenchState {
   redo: () => void;
 
   setProject: (p: ProjectData) => void;
+  /** Live palette edit; the caller commits once at the start of a gesture. */
+  setThemeColors: (colors: ProjectData["themeColors"]) => void;
   select: (id: string | null) => void;
   setPlayhead: (f: number) => void;
   setPlaying: (b: boolean) => void;
@@ -155,6 +157,8 @@ export const useStore = create<WorkbenchState>((set, get) => ({
     get().commit();
     set({ project: upgradeLegacyTheme(p, MANIFEST, CARDS), selectedClipId: null });
   },
+  setThemeColors: (themeColors) =>
+    set((s) => ({ project: { ...s.project, themeColors }, previewItem: null })),
   select: (id) => set({ selectedClipId: id }),
   setPlayhead: (f) => set({ playhead: Math.max(0, Math.round(f)) }),
   setPlaying: (b) => set({ playing: b }),
