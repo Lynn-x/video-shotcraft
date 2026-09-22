@@ -33,7 +33,9 @@ export const rgba = (color: string, alpha: number) =>
   `color-mix(in srgb, ${color} ${Math.max(0, Math.min(1, alpha)) * 100}%, transparent)`;
 export const themeAsset = (theme: VisualTheme, src: string) => {
   if (src.startsWith('textures/live/') && theme.id !== 'ink-press') {
-    return paletteAsset(theme, src.slice('textures/live/'.length)) ?? staticFile('themes/' + theme.id + '/' + src);
+    const asset = paletteAsset(theme, src.slice('textures/live/'.length));
+    if (!asset) throw new Error(`Missing editable texture: ${src}`);
+    return asset;
   }
   return staticFile(src);
 };

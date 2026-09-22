@@ -2,7 +2,7 @@
 
 Open the **主题 (Themes)** tab in the existing left sidebar. Its upper section selects a preset; its lower section edits background, card surface, text, secondary text, accent, subtle fill, and border colors using a color picker or a six-digit HEX value. Press Enter or leave the HEX field to apply it. Invalid input is discarded.
 
-Presets: Ink Press, Modern Light, Midnight, Sage, Coral, Iris, Deep Ocean, and Obsidian Violet. Sage, Coral, and Iris replace the earlier bright experiments with pale surfaces and restrained accents. Their existing IDs (`solar-pop`, `coral-burst`, `color-play`) remain compatible with saved projects. Coral's neutral surface / dark violet text / coral accent direction draws on [Happy Hues](https://www.happyhues.co/); values are adapted for this fixture, not an exact copy of a complete site.
+Presets: Ink Press, Modern Light, Midnight, Sage, Coral, Iris, Deep Ocean, Obsidian Violet, and Vintage Kraft. Sage, Coral, and Iris replace the earlier bright experiments with pale surfaces and restrained accents. Their existing IDs (`solar-pop`, `coral-burst`, `color-play`) remain compatible with saved projects. Coral's neutral surface / dark violet text / coral accent direction draws on [Happy Hues](https://www.happyhues.co/); values are adapted for this fixture, not an exact copy of a complete site.
 
 - `themeId` and optional `themeColors` are stored in project JSON and browser saves. Changes support undo/redo.
 - Selecting another preset clears palette overrides; **恢复预设** clears them for the current preset. Explicit per-clip edits remain intact and take precedence.
@@ -16,7 +16,7 @@ Presets: Ink Press, Modern Light, Midnight, Sage, Coral, Iris, Deep Ocean, and O
 
 `src/themes/palette-assets.json` contains five trusted, serialized demo pages and 27 crop definitions. Runtime SVG assets embed this markup using `foreignObject` and validated HEX variables. The same renderer is used in preview and video export, with a bounded cache. Editing colors does not invoke a capture service or recolor pixels with a filter. Third-party screenshots still require a separately adapted source.
 
-After changing fixture markup or geometry, run `node scripts/build-palette-assets.cjs` from `template/`. It requires Playwright in the development environment. `SHOTCRAFT_PLAYWRIGHT` and `SHOTCRAFT_BROWSER` can select an existing module and Chromium executable. The compiled JSON is committed, so end users do not need these tools. `node scripts/capture-themes.cjs` also regenerates the retained PNG snapshots and geometry/overflow report.
+After changing fixture markup or geometry, run `node scripts/build-palette-assets.cjs` from `template/`. It requires Playwright in the development environment. `SHOTCRAFT_PLAYWRIGHT` and `SHOTCRAFT_BROWSER` can select an existing module and Chromium executable. The compiled JSON is committed, so end users do not need these tools.
 
 The optional manifest additions are `themes[].palette` and `paletteProp`, alongside `themes`, `defaultTheme`, `themeProp`, and each unit's `themeKey`. Props resolve schema defaults → preset defaults → project palette → explicit clip edits. Manifests without palette support keep their existing behavior.
 
@@ -32,7 +32,7 @@ Save this as a props JSON and pass it to `npm run render -- --props=<file>`. Wor
 
 ## Verification and provenance
 
-Run `npm run test:themes` and `npx tsc --noEmit` from `workbench/`, and `npx tsc --noEmit` from `template/`. Tests cover custom palette validation and precedence, reset, edit preservation, legacy saves, and unthemed projects. See `themes/PALETTE-VALIDATION.md` for browser/export coverage.
+Run `npm run test:themes` and `npx tsc --noEmit` from `workbench/`, and `npx tsc --noEmit` from `template/`. Tests cover custom palette validation and precedence, reset, edit preservation, legacy saves, and unthemed projects. Browser/export validation results are recorded in PR #80.
 
 The fixture describes a fictional research workspace, not a connected service or real research results. Original assets retain their existing attribution/license terms; new fixture code and derived assets use this repository's Apache-2.0 license.
 

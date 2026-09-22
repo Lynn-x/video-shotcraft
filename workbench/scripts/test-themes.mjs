@@ -7,7 +7,7 @@ import ts from 'typescript';
 // Run the small pure state/props adapter using the project's existing compiler.
 const require = createRequire(import.meta.url);
 require.extensions['.ts'] = (mod, filename) => mod._compile(ts.transpileModule(fs.readFileSync(filename, 'utf8'), {
-  compilerOptions: {module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020},
+  compilerOptions: {module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020, esModuleInterop: true},
 }).outputText, filename);
 const {switchTheme, themedProps, inheritedProps, selectedTheme, themedBackground, upgradeLegacyTheme} = require('../src/theme.ts');
 const card = {themeKey: 'title', schema: [{key:'ink',default:'#111'},{key:'text',default:'Title'}]};
@@ -73,4 +73,20 @@ test('portable palettes validate schema and round-trip without changing clips',(
  for(const bad of [{...saved,version:2},{...saved,baseThemeId:'missing'},{...saved,colors:{page:'url(x)',text:'#eeeeee'}},{...saved,colors:{page:'#111111'}}])assert.throws(()=>parsePalette(JSON.stringify(bad),m));
  assert.throws(()=>parsePalette('not json',m));
  assert.throws(()=>parsePalette(' '.repeat(65537),m));
+});
+
+const {paletteAsset}=require('../../template/src/themes/palette-assets.ts');
+const paletteClips=require('../../template/src/themes/palette-assets.json').clips;
+const palettes=require('../../template/src/themes/palettes.json');
+test('every editable texture is CSS-url-safe, including procedural kraft grain',()=>{
+ const originals=fs.readdirSync(new URL('../../template/public/textures/live/',import.meta.url)).filter(f=>f.endsWith('.png'));
+ assert.deepEqual(Object.keys(paletteClips).sort(),originals.sort());
+ for(const [id,colors] of Object.entries(palettes))for(const name of originals){
+  const uri=paletteAsset({...colors,id},name);
+  assert.ok(uri.startsWith('data:image/svg+xml;'));
+  assert.doesNotMatch(uri,/[()']/);
+  const decoded=decodeURIComponent(uri.slice(uri.indexOf(',')+1));
+  assert.ok(decoded.includes('var(--'));
+  if(id==='vintage-kraft')assert.ok(decoded.includes('url(#kraft-grain)'));
+ }
 });
